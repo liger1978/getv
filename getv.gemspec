@@ -11,8 +11,6 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/liger1978/getv"
   spec.license       = "MIT"
 
-  spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/liger1978/getv"
   spec.metadata["changelog_uri"] = "https://github.com/liger1978/getv"
