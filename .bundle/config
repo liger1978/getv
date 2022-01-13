@@ -1,0 +1,4 @@
+---
+BUNDLE_BIN: "bin"
+BUNDLE_DISABLE_SHARED_GEMS: "true"
+BUNDLE_PATH: "./bundle"
