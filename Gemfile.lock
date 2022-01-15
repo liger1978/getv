@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    getv (0.1.0)
+    getv (0.2.1)
       docker_registry2 (>= 1.0.0, < 2.0.0)
       nokogiri (>= 1.0.0, < 2.0.0)
       octokit (>= 3.0.0, < 5.0.0)
@@ -110,4 +110,4 @@ DEPENDENCIES
   semantic (~> 1.6)
 
 BUNDLED WITH
-   2.1.4
+   2.2.22

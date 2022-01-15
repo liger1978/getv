@@ -137,6 +137,7 @@ module Getv
       else
         github = Octokit::Client.new()
       end
+      github.auto_paginate = true
       if method == 'release'
         return github.releases("#{opts[:owner]}/#{opts[:repo]}").map{|r| r.tag_name}
       elsif method == 'commit'
