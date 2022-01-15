@@ -11,12 +11,16 @@ module Getv
       elsif /python.*-.*/.match?(name)
         opts = {'type' => 'pypi'}.merge(opts)
       end
+      if opts[:type] == 'github_commit'
+        opts = {
+          :select_search => '^((\d{8})(\d{6}),(([a-z\d]{7})(.*)))$',
+          :semantic_only => false
+        }.merge(opts)
+      end
       opts = {
         :type => 'github_release',
-        :select => {
-          :search => '^\s*v?((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)\s*$',
-          :replace => '\1'
-        },
+        :select_search => '^\s*v?((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)\s*$',
+        :select_replace => '\1',
         :reject => nil,
         :semantic_only => true,
         :semantic_select => ['*'],
@@ -62,6 +66,8 @@ module Getv
         versions = get_versions_using_gem
       when 'get'
         versions = get_versions_using_get
+      when 'github_commit'
+        versions = get_versions_using_github('commit')
       when 'github_release'
         versions = get_versions_using_github('release')
       when 'github_tag'
@@ -73,9 +79,12 @@ module Getv
       when 'pypi'
         versions = get_versions_using_pypi
       end
-      select_pattern = Regexp.new(opts[:select][:search])
+      if opts[:type] == 'github_commit'
+        versions.sort!
+      end
+      select_pattern = Regexp.new(opts[:select_search])
       versions.select! {|v| v =~ select_pattern}
-      versions.map! {|v| v.sub(select_pattern, opts[:select][:replace])}
+      versions.map! {|v| v.sub(select_pattern, opts[:select_replace])}
       unless opts[:reject].nil?
         versions.reject! {|v| v =~ Regexp.new(opts[:reject])}
       end
@@ -88,7 +97,9 @@ module Getv
         end
         versions.sort_by! {|v| Semantic::Version.new(v)}
       else
-        versions.sort!
+        unless opts[:type] == 'github_commit'
+          versions.sort!
+        end
       end
       opts[:versions] = versions
       unless opts[:versions].empty?
@@ -128,6 +139,10 @@ module Getv
       end
       if method == 'release'
         return github.releases("#{opts[:owner]}/#{opts[:repo]}").map{|r| r.tag_name}
+      elsif method == 'commit'
+        return github.commits("#{opts[:owner]}/#{opts[:repo]}").map { |c|
+          "#{DateTime.parse(c[:commit][:author][:date].to_s).strftime('%Y%m%d%H%M%S')},#{c[:sha]}"
+        }
       else
         return github.tags("#{opts[:owner]}/#{opts[:repo]}").map{|t| t[:name]}
       end
