@@ -21,13 +21,13 @@ Or install it yourself as:
 ## Usage
 
 ```
-irb(main):024:0> superset = Getv::Package.new('superset',{:type => 'docker', :owner => 'apache', :reject => '-'})
+irb(main):024:0> superset = Getv::Package.new('superset', type: 'docker', owner: 'apache', reject: '-')
 =>
 #<Getv::Package:0x000055b6d2326f20
 ...
-irb(main):025:0> superset.get_versions
+irb(main):025:0> superset.versions
 => ["1.0.0", "1.0.1", "1.1.0", "1.2.0", "1.3.0", "1.3.1", "1.3.2"]
-irb(main):026:0> superset.get_latest_version
+irb(main):026:0> superset.latest_version
 => "1.3.2"
 irb(main):027:0> superset
 =>

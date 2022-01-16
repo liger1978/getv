@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/ruby/webrick/tags?per_page=100
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.21.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Sun, 16 Jan 2022 19:20:02 GMT
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - '"58cc42e9d1218e1ab9c0046b346b0a35dfead1cd3139056e7e4904afca598843"'
+      Last-Modified:
+      - Tue, 04 Jan 2022 18:34:39 GMT
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - '0'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      X-Github-Media-Type:
+      - github.v3; format=json
+      X-Ratelimit-Limit:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '44'
+      X-Ratelimit-Reset:
+      - '1642363951'
+      X-Ratelimit-Resource:
+      - core
+      X-Ratelimit-Used:
+      - '16'
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '734'
+      X-Github-Request-Id:
+      - BDFC:0A2A:E5A13D:1B17304:61E46FE2
+    body:
+      encoding: ASCII-8BIT
+      string: '[{"name":"v1.7.0","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.7.0","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.7.0","commit":{"sha":"650289c70d1bccb3e0cefcf6ede99dc043c5a9dd","url":"https://api.github.com/repos/ruby/webrick/commits/650289c70d1bccb3e0cefcf6ede99dc043c5a9dd"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjcuMA=="},{"name":"v1.6.1","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.6.1","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.6.1","commit":{"sha":"800c29e9844b1cc901a4d92662c675bf7d34244b","url":"https://api.github.com/repos/ruby/webrick/commits/800c29e9844b1cc901a4d92662c675bf7d34244b"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjYuMQ=="},{"name":"v1.6.0","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.6.0","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.6.0","commit":{"sha":"c5635fa5e2d4b7d5ca2e08e4c1ae6ec13c7237ec","url":"https://api.github.com/repos/ruby/webrick/commits/c5635fa5e2d4b7d5ca2e08e4c1ae6ec13c7237ec"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjYuMA=="},{"name":"v1.5.1","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.5.1","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.5.1","commit":{"sha":"92bb2dd85b456c211468d30cf15097ff70647776","url":"https://api.github.com/repos/ruby/webrick/commits/92bb2dd85b456c211468d30cf15097ff70647776"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjUuMQ=="},{"name":"v1.5.0","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.5.0","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.5.0","commit":{"sha":"00c281caa78d2461a4d6418adfe0f911f40f6125","url":"https://api.github.com/repos/ruby/webrick/commits/00c281caa78d2461a4d6418adfe0f911f40f6125"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjUuMA=="},{"name":"v1.4.4","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.4","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.4","commit":{"sha":"020d148c17df27a0cba3548c144901754120ca01","url":"https://api.github.com/repos/ruby/webrick/commits/020d148c17df27a0cba3548c144901754120ca01"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuNA=="},{"name":"v1.4.3","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.3","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.3","commit":{"sha":"d7fc6f1161ae15e6b950a13d02ff77c62fe47b28","url":"https://api.github.com/repos/ruby/webrick/commits/d7fc6f1161ae15e6b950a13d02ff77c62fe47b28"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuMw=="},{"name":"v1.4.2","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.2","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.2","commit":{"sha":"346c656620bd33bf090ca10785b7fa2b54ec2d55","url":"https://api.github.com/repos/ruby/webrick/commits/346c656620bd33bf090ca10785b7fa2b54ec2d55"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuMg=="},{"name":"v1.4.1","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.1","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.1","commit":{"sha":"b0c8eb545ce25de99262dfae087eecba13f929ad","url":"https://api.github.com/repos/ruby/webrick/commits/b0c8eb545ce25de99262dfae087eecba13f929ad"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuMQ=="},{"name":"v1.4.0","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.0","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.0","commit":{"sha":"425cfb5d304ec508f8e7a8e643d2bcdb06d5fa79","url":"https://api.github.com/repos/ruby/webrick/commits/425cfb5d304ec508f8e7a8e643d2bcdb06d5fa79"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuMA=="},{"name":"v1.4.0.beta1","zipball_url":"https://api.github.com/repos/ruby/webrick/zipball/refs/tags/v1.4.0.beta1","tarball_url":"https://api.github.com/repos/ruby/webrick/tarball/refs/tags/v1.4.0.beta1","commit":{"sha":"0946a3e87fd96a917e89da474836409a23d27fa6","url":"https://api.github.com/repos/ruby/webrick/commits/0946a3e87fd96a917e89da474836409a23d27fa6"},"node_id":"MDM6UmVmODY2NDQ2MDg6cmVmcy90YWdzL3YxLjQuMC5iZXRhMQ=="}]'
+  recorded_at: Sun, 16 Jan 2022 19:20:02 GMT
+recorded_with: VCR 6.0.0
