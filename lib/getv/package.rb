@@ -13,6 +13,7 @@ module Getv
       end
       if opts[:type] == 'github_commit'
         opts = {
+          :branch => 'master',
           :select_search => '^((\d{8})(\d{6}),(([a-z\d]{7})(.*)))$',
           :semantic_only => false
         }.merge(opts)
@@ -141,7 +142,7 @@ module Getv
       if method == 'release'
         return github.releases("#{opts[:owner]}/#{opts[:repo]}").map{|r| r.tag_name}
       elsif method == 'commit'
-        return github.commits("#{opts[:owner]}/#{opts[:repo]}").map { |c|
+        return github.commits("#{opts[:owner]}/#{opts[:repo]}",opts[:branch]).map { |c|
           "#{DateTime.parse(c[:commit][:author][:date].to_s).strftime('%Y%m%d%H%M%S')},#{c[:sha]}"
         }
       else
