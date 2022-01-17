@@ -9,6 +9,9 @@
 /tmp/
 /*.gem
 /vendor
+bin/*
+!bin/console
+!bin/setup
 Gemfile.lock
 
 # rspec failure tracking
