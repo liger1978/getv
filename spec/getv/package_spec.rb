@@ -26,7 +26,7 @@ RSpec.describe Getv::Package, :vcr do
 
   context '::gem' do
     let :expected_versions do
-      ['7.12.0', '7.12.0', '7.12.1', '7.12.1', '7.12.1', '7.12.1', '7.13.1', '7.13.1', '7.13.1', '7.13.1']
+      ['7.5.0', '7.6.1', '7.7.0', '7.8.0', '7.9.0', '7.10.0', '7.11.0', '7.12.0', '7.12.1', '7.13.1']
     end
     before(:each) do
       @package = described_class.new 'puppet', type: 'gem', reject: '-'
