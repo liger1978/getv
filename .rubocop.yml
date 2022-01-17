@@ -1,5 +1,9 @@
 ---
 AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'bundle/**/*'
+    - '*.gemspec'
   NewCops: enable
 
 Metrics/BlockLength:
