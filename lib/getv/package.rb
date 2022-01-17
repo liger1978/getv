@@ -80,7 +80,7 @@ module Getv
       else
         versions.sort! unless opts[:type] == 'github_commit'
       end
-      opts[:versions] = versions
+      opts[:versions] = versions.uniq
       opts[:latest_version] = opts[:versions][-1] unless opts[:versions].empty?
     end
 
