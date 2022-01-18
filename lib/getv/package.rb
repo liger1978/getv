@@ -5,7 +5,7 @@ module Getv
   class Package # rubocop:disable Metrics/ClassLength
     attr_accessor :name, :opts
 
-    def initialize(name, opts = {}) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize
+    def initialize(name, opts = {}) # rubocop:disable Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize,Metrics/PerceivedComplexity
       @name = name
       case name
       when /rubygem-.*/
@@ -32,6 +32,9 @@ module Getv
         versions: nil,
         latest_version: nil
       }.merge(opts)
+      if (opts[:type] == 'docker' || opts[:type] =~ /github.*/) && (name.count('/') == 1)
+        opts = { owner: name.split('/')[0], repo: name.split('/')[1] }.merge(opts)
+      end
       case opts[:type]
       when 'docker'
         opts = { owner: 'library', repo: name, url: 'https://registry.hub.docker.com' }.merge(opts)
