@@ -1,4 +1,6 @@
-/bin/
+/bin/*
+!/bin/console
+!/bin/setup
 /bundle/
 /.yardoc
 /_yardoc/
@@ -9,9 +11,6 @@
 /tmp/
 /*.gem
 /vendor
-bin/*
-!bin/console
-!bin/setup
 Gemfile.lock
 
 # rspec failure tracking
