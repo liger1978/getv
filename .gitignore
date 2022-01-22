@@ -1,4 +1,6 @@
-/bin/
+/bin/*
+!/bin/console
+!/bin/setup
 /bundle/
 /.yardoc
 /_yardoc/
