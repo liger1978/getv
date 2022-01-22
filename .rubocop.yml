@@ -5,6 +5,7 @@ AllCops:
   Exclude:
     - 'bin/**/*'
     - 'bundle/**/*'
+    - 'vendor/**/*'
     - '*.gemspec'
   NewCops: enable
 
