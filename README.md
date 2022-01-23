@@ -1,5 +1,7 @@
 # getv
 
+[![Gem Version](https://badge.fury.io/rb/getv.svg)](https://rubygems.org/gems/getv)
+
 The goal of `getv` is to make it easy and quick to pull software package version numbers from various sources on the web. The application is packaged as a [gem](https://rubygems.org/gems/getv) and provides both a Ruby library and an executable command line tool, `getv`.
 
 ## Installation
