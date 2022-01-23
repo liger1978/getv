@@ -3,9 +3,9 @@ require:
   - rubocop-rspec
 AllCops:
   Exclude:
-    - 'bin/**/*'
-    - 'bundle/**/*'
+    - 'bin/*'
     - 'vendor/**/*'
+    - '.bundle/**/*'
     - '*.gemspec'
   NewCops: enable
 
