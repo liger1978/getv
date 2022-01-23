@@ -1,6 +1,5 @@
 /bin/*
 !/bin/console
-!/bin/getv
 !/bin/setup
 /bundle/
 /.yardoc
