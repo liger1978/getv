@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'docker_registry2', '~> 1.10'
+gem 'gli', '~> 2.20'
 gem 'irb', '~> 1.4'
 gem 'nokogiri', '~> 1.13'
 gem 'octokit', '~> 4.21'
