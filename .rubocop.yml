@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 AllCops:
   Exclude:
-    - 'bin/**/*'
+    - !ruby/regexp /\/bin\/\b(?!getv\b)\w+/
     - 'bundle/**/*'
     - 'vendor/**/*'
     - '*.gemspec'

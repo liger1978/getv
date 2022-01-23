@@ -1,0 +1,265 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'getv'
+require 'gli'
+
+module Getv
+  # cli class
+  class Cli
+    def self.output(package, latest: false, json: false) # rubocop:disable Metrics/MethodLength
+      if latest
+        if json
+          require 'json'
+          puts({
+            'name' => package.name,
+            'latest_version' => package.latest_version
+          }.to_json)
+        else
+          puts package.latest_version
+        end
+      elsif json
+        require 'json'
+        puts({
+          'name' => package.name,
+          'versions' => package.versions
+        }.to_json)
+      else
+        puts package.versions
+      end
+    end
+  end
+end
+
+# app class
+class App # rubocop:disable Metrics/ClassLength
+  extend GLI::App
+
+  program_desc 'Get package version numbers from the web in various ways'
+
+  version Getv::VERSION
+
+  subcommand_option_handling :normal
+  arguments :strict
+
+  switch %i[l latest], desc: 'Latest version', negatable: false
+  switch %i[j json], desc: 'Output in json', negatable: false
+  flag %i[select_search], desc: 'Regex version selection search'
+  flag %i[select_replace], desc: 'Regex version selection replace'
+  flag %i[reject], desc: 'Regex version rejection'
+
+  desc 'Get package versions from a Docker or OCI container image registry'
+  arg_name 'package_name'
+  command :docker do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.flag %i[owner], desc: 'Repository owner'
+    c.flag %i[repo], desc: 'Repository name'
+    c.flag %i[url], desc: 'URL'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo,
+                          :url
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from RubyGems.org'
+  arg_name 'package_name'
+  command :gem do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from text file URL'
+  arg_name 'package_name'
+  command :get do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.flag %i[url], desc: 'URL'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from GitHub commits'
+  arg_name 'package_name'
+  command :github_commit do |c|
+    c.flag %i[owner], desc: 'Repository owner'
+    c.flag %i[repo], desc: 'Repository name'
+    c.flag %i[branch], desc: 'Repository branch'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :owner, :repo, :branch
+        opts = opts.delete_if { |_k, v| v.nil? }
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from GitHub releases'
+  arg_name 'package_name'
+  command :github_release do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.flag %i[owner], desc: 'Repository owner'
+    c.flag %i[repo], desc: 'Repository name'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from GitHub tags'
+  arg_name 'package_name'
+  command :github_tag do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.flag %i[owner], desc: 'Repository owner'
+    c.flag %i[repo], desc: 'Repository name'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from web page of links'
+  arg_name 'package_name'
+  command :index do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.flag %i[url], desc: 'URL'
+    c.switch %i[link_value], desc: 'Use the value (target) of links rather than the content (display text)',
+                             negatable: false, default_value: false
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:link] == 'value' if options[:link_value]
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from npm at registry.npmjs.org'
+  arg_name 'package_name'
+  command :npm do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  desc 'Get package versions from the Python Package Index at pypi.org'
+  arg_name 'package_name'
+  command :pypi do |c|
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)'
+    c.action do |global_options, options, args|
+      if args.size == 1
+        opts = global_options.merge(options)
+        opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+        opts = opts.delete_if { |_k, v| v.nil? }
+        opts[:semantic_only] = !options[:invalid_versions]
+        opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+        package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+        Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+      else
+        help_now!
+      end
+    end
+  end
+
+  pre do |_global, _command, _options, _args|
+    # Pre logic here
+    # Return true to proceed; false to abort and not call the
+    # chosen command
+    # Use skips_pre before a command to skip this block
+    # on that command only
+    true
+  end
+
+  post do |global, command, options, args|
+    # Post logic here
+    # Use skips_post before a command to skip this
+    # block on that command only
+  end
+
+  on_error do |_exception|
+    # Error logic here
+    # return false to skip default error handling
+    true
+  end
+end
+
+exit App.run(ARGV)
