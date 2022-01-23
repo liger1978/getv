@@ -143,6 +143,14 @@ puts superset.latest_version
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rake spec` to run the tests. Run `bundle exec rubocop` to run the linter. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
+Note that by default, Bundler will attempt to install gems to the system, e.g. `/usr/bin`, `/usr/share`, which requires elevated access and can interfere with files that are managed by the system's package manager. This behaviour can be overridden by creating the file `.bundle/config` and adding the following line:
+```
+BUNDLE_PATH: "./.bundle"
+```
+When you run `bin/setup` or `bundle install`, all gems will be installed inside the .bundle directory of this project.
+
+To make this behaviour a default for all gem projects, the above line can be added to the user's bundle config file in their home directory (`~/.bundle/config`)
+
 ## Contributing
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/liger1978/getv).

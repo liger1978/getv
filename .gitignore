@@ -1,7 +1,4 @@
-/bin/*
-!/bin/console
-!/bin/setup
-/bundle/
+/.bundle/
 /.yardoc
 /_yardoc/
 /coverage/
