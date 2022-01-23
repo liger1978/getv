@@ -113,7 +113,7 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
-  desc 'Get package versions from GitHub commits'
+  desc 'Get package versions from GitHub commits. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
   arg_name 'package_name'
   command :github_commit do |c|
     c.flag %i[owner], desc: 'Repository owner'
@@ -132,7 +132,7 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
-  desc 'Get package versions from GitHub releases'
+  desc 'Get package versions from GitHub releases. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
   arg_name 'package_name'
   command :github_release do |c|
     c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
@@ -154,7 +154,7 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
-  desc 'Get package versions from GitHub tags'
+  desc 'Get package versions from GitHub tags. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
   arg_name 'package_name'
   command :github_tag do |c|
     c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
