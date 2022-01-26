@@ -24,7 +24,7 @@ module Getv
       end
       opts = {
         type: 'github_release',
-        select_search: '^\s*v?((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?)\s*$', # rubocop:disable Layout/LineLength
+        select_search: '^\s*v?(.*)\s*$',
         select_replace: '\1',
         reject: nil,
         semantic_only: true,

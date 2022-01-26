@@ -39,18 +39,15 @@ SYNOPSIS
 
 
 VERSION
-    1.1.0
+    1.3.0
 
 
 
 GLOBAL OPTIONS
-    --help               - Show this message
-    -j, --json           - Output in json
-    -l, --latest         - Latest version
-    --reject=arg         - Regex version rejection (default: none)
-    --select_replace=arg - Regex version selection replace (default: none)
-    --select_search=arg  - Regex version selection search (default: none)
-    --version            - Display the program version
+    --help       - Show this message
+    -j, --json   - Output in json
+    -l, --latest - Latest version
+    --version    - Display the program version
 
 
 
@@ -58,9 +55,9 @@ COMMANDS
     docker         - Get package versions from a Docker or OCI container image registry
     gem            - Get package versions from RubyGems.org
     get            - Get package versions from text file URL
-    github_commit  - Get package versions from GitHub commits
-    github_release - Get package versions from GitHub releases
-    github_tag     - Get package versions from GitHub tags
+    github_commit  - Get package versions from GitHub commits. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
+    github_release - Get package versions from GitHub releases. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
+    github_tag     - Get package versions from GitHub tags. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
     help           - Shows a list of commands or help for one command
     index          - Get package versions from web page of links
     npm            - Get package versions from npm at registry.npmjs.org
@@ -73,7 +70,7 @@ Show the latest available version of the `getv` gem:
 
 ```console
 $ getv --latest gem getv
-1.1.0
+1.3.0
 ```
 
 Show all `dep` GitHub release versions in JSON:
@@ -86,7 +83,7 @@ $ getv --json github_release golang/dep
 Show all AtomicParsley Github release versions:
 
 ```console
-$ getv --select_search='(.*)' github_release --invalid_versions wez/atomicparsley
+$ getv github_release --invalid_versions wez/atomicparsley
 20200701.154658.b0d6223
 20201231.092811.cbecfb1
 20210114.184825.1dbe1be
@@ -105,7 +102,7 @@ $ getv -l get --url=https://storage.googleapis.com/kubernetes-release/release/st
 Show selected semantic versions of the `apache/superset` Docker image in JSON:
 
 ```console
-$ getv --json --reject '-' docker --semantic_select '~>1.3.0,!=1.3.1' apache/superset
+$ getv --json docker --reject '-' --semantic_select '~>1.3.0,!=1.3.1' apache/superset
 {"name":"apache/superset","versions":["1.3.0","1.3.2"]}
 ```
 
@@ -123,7 +120,7 @@ Show the latest GitHub commit to the `main` branch of the `getv` project in a us
 
 ```console
 # By default the \2 capture group contains the date and \5 contains the short commit hash
-$ getv -l --select_replace '\2git\5' github_commit --branch main liger1978/getv
+$ getv -l github_commit --select_replace '\2git\5' --branch main liger1978/getv
 20220123git9ed86f0
 ```
 
