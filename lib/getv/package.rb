@@ -89,9 +89,15 @@ module Getv
 
     private
 
-    def versions_using_docker
+    def versions_using_docker # rubocop:disable Metrics/AbcSize
       require 'docker_registry2'
-      docker = DockerRegistry2.connect(opts[:url])
+      docker_opts = {}
+      docker_opts[:http_options] = { proxy: ENV['DOCKER_PROXY'] } if ENV['DOCKER_PROXY']
+      if ENV['DOCKER_USER'] && ENV['DOCKER_PASSWORD']
+        docker_opts[:user] = ENV['DOCKER_USER']
+        docker_opts[:password] = ENV['DOCKER_PASSWORD']
+      end
+      docker = DockerRegistry2.connect(opts[:url], docker_opts)
       docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags']
     end
 

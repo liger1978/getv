@@ -35,7 +35,7 @@ class App # rubocop:disable Metrics/ClassLength
   switch %i[l latest], desc: 'Latest version', negatable: false
   switch %i[j json], desc: 'Output in json', negatable: false
 
-  desc 'Get package versions from a Docker or OCI container image registry'
+  desc 'Get package versions from a Docker or OCI container image registry. Set environment variables $DOCKER_PROXY, $DOCKER_USER and $DOCKER_PASSWORD if required.' # rubocop:disable Layout/LineLength
   arg_name 'package_name'
   command :docker do |c|
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
