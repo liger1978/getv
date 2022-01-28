@@ -39,7 +39,7 @@ SYNOPSIS
 
 
 VERSION
-    1.3.0
+    1.5.0
 
 
 
@@ -55,9 +55,9 @@ COMMANDS
     docker         - Get package versions from a Docker or OCI container image registry
     gem            - Get package versions from RubyGems.org
     get            - Get package versions from text file URL
-    github_commit  - Get package versions from GitHub commits. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
-    github_release - Get package versions from GitHub releases. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
-    github_tag     - Get package versions from GitHub tags. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.
+    github_commit  - Get package versions from GitHub commits
+    github_release - Get package versions from GitHub releases
+    github_tag     - Get package versions from GitHub tags
     help           - Shows a list of commands or help for one command
     index          - Get package versions from web page of links
     npm            - Get package versions from npm at registry.npmjs.org
@@ -70,7 +70,7 @@ Show the latest available version of the `getv` gem:
 
 ```console
 $ getv --latest gem getv
-1.3.0
+1.5.0
 ```
 
 Show all `dep` GitHub release versions in JSON:

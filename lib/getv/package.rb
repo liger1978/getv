@@ -29,6 +29,7 @@ module Getv
         reject: nil,
         semantic_only: true,
         semantic_select: ['*'],
+        proxy: nil,
         versions: nil,
         latest_version: nil
       }.merge(opts)
@@ -37,11 +38,12 @@ module Getv
       end
       case opts[:type]
       when 'docker'
-        opts = { owner: 'library', repo: name, url: 'https://registry.hub.docker.com' }.merge(opts)
+        opts = { owner: 'library', repo: name, url: 'https://registry.hub.docker.com', user: nil,
+                 password: nil }.merge(opts)
       when 'gem'
         opts = { gem: name[/rubygem-(.*)/, 1] || name }.merge(opts)
       when /github.*/
-        opts = { owner: name, repo: name }.merge(opts)
+        opts = { owner: name, repo: name, token: nil }.merge(opts)
       when 'index'
         opts = { link: 'content' }.merge(opts)
       when 'npm'
@@ -89,13 +91,18 @@ module Getv
 
     private
 
+    def get(url)
+      require 'rest-client'
+      RestClient::Request.execute(method: :get, url: url, proxy: opts[:proxy]).body
+    end
+
     def versions_using_docker # rubocop:disable Metrics/AbcSize
       require 'docker_registry2'
       docker_opts = {}
-      docker_opts[:http_options] = { proxy: ENV['DOCKER_PROXY'] } if ENV['DOCKER_PROXY']
-      if ENV['DOCKER_USER'] && ENV['DOCKER_PASSWORD']
-        docker_opts[:user] = ENV['DOCKER_USER']
-        docker_opts[:password] = ENV['DOCKER_PASSWORD']
+      docker_opts[:http_options] = { proxy: opts[:proxy] } unless opts[:proxy].nil?
+      if opts[:user] && opts[:password]
+        docker_opts[:user] = opts[:user]
+        docker_opts[:password] = opts[:password]
       end
       docker = DockerRegistry2.connect(opts[:url], docker_opts)
       docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags']
@@ -103,29 +110,26 @@ module Getv
 
     def versions_using_gem
       require 'json'
-      require 'open-uri'
-      require 'net/http'
-      JSON.parse(Net::HTTP.get(URI("https://rubygems.org/api/v1/versions/#{opts[:gem]}.json"))).map do |v|
+      JSON.parse(get("https://rubygems.org/api/v1/versions/#{opts[:gem]}.json")).map do |v|
         v['number']
       end
     end
 
     def versions_using_get
-      require 'open-uri'
-      require 'net/http'
-      Net::HTTP.get(URI(opts[:url])).split("\n")
+      get(opts[:url]).split("\n")
     end
 
-    def github
+    def github # rubocop:disable Metrics/MethodLength
       require 'octokit'
-      if ENV['GITHUB_TOKEN']
-        github = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+      if opts[:token]
+        github = Octokit::Client.new(access_token: opts[:token])
         user = github.user
         user.login
       else
         github = Octokit::Client.new
       end
       github.auto_paginate = true
+      github.proxy = opts[:proxy]
       github
     end
 
@@ -143,11 +147,8 @@ module Getv
     end
 
     def versions_using_index
-      require 'open-uri'
-      require 'net/http'
       require 'nokogiri'
-
-      Nokogiri::HTML(URI.open(opts[:url])).css('a').map do |a| # rubocop:disable Security/Open
+      Nokogiri::HTML(get(opts[:url])).css('a').map do |a|
         if opts[:link] == 'value'
           a.values[0]
         else
@@ -158,16 +159,12 @@ module Getv
 
     def versions_using_npm
       require 'json'
-      require 'open-uri'
-      require 'net/http'
-      JSON.parse(Net::HTTP.get(URI("https://registry.npmjs.org/#{opts[:npm]}")))['versions'].keys
+      JSON.parse(get("https://registry.npmjs.org/#{opts[:npm]}"))['versions'].keys
     end
 
     def versions_using_pypi
       require 'json'
-      require 'open-uri'
-      require 'net/http'
-      JSON.parse(Net::HTTP.get(URI("https://pypi.org/pypi/#{opts[:pypi]}/json")))['releases'].keys
+      JSON.parse(get("https://pypi.org/pypi/#{opts[:pypi]}/json"))['releases'].keys
     end
   end
 end

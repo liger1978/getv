@@ -12,6 +12,7 @@ gem 'nokogiri', '~> 1.13'
 gem 'octokit', '~> 4.21'
 gem 'rake', '~> 12.0'
 gem 'rdoc', '~> 6.4'
+gem 'rest-client', '~> 2.1'
 gem 'rspec', '~> 3.0'
 gem 'rubocop', '~> 1.24', require: false
 gem 'rubocop-rake', '~> 0.6', require: false
