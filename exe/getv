@@ -34,8 +34,9 @@ class App # rubocop:disable Metrics/ClassLength
 
   switch %i[l latest], desc: 'Latest version', negatable: false
   switch %i[j json], desc: 'Output in json', negatable: false
+  flag %i[p proxy], desc: 'Web proxy', default_value: nil
 
-  desc 'Get package versions from a Docker or OCI container image registry. Set environment variables $DOCKER_PROXY, $DOCKER_USER and $DOCKER_PASSWORD if required.' # rubocop:disable Layout/LineLength
+  desc 'Get package versions from a Docker or OCI container image registry'
   arg_name 'package_name'
   command :docker do |c|
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
@@ -50,12 +51,14 @@ class App # rubocop:disable Metrics/ClassLength
     c.flag %i[repo], desc: 'Repository name',
                      default_value: "'<repo>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
     c.flag %i[url], desc: 'URL', default_value: defaults[:url]
+    c.flag %i[user], desc: 'Username', default_value: defaults[:user]
+    c.flag %i[password], desc: 'Password', default_value: defaults[:password]
     c.action do |global_options, options, args|
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
       opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo,
-                        :url
+                        :url, :user, :password, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -78,7 +81,7 @@ class App # rubocop:disable Metrics/ClassLength
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -101,7 +104,7 @@ class App # rubocop:disable Metrics/ClassLength
     c.action do |global_options, options, args|
       help_now! unless args.size == 1
 
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -110,7 +113,7 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
-  desc 'Get package versions from GitHub commits. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
+  desc 'Get package versions from GitHub commits'
   arg_name 'package_name'
   command :github_commit do |c|
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
@@ -122,18 +125,19 @@ class App # rubocop:disable Metrics/ClassLength
     c.flag %i[repo], desc: 'Repository name',
                      default_value: "'<repo>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
     c.flag %i[branch], desc: 'Repository branch', default_value: defaults[:branch]
+    c.flag %i[token], desc: 'Token', default_value: defaults[:token]
     c.action do |global_options, options, args|
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :owner, :repo, :branch
+      opts = opts.slice :select_search, :select_replace, :reject, :owner, :repo, :branch, :token, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
       Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
     end
   end
 
-  desc 'Get package versions from GitHub releases. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
+  desc 'Get package versions from GitHub releases'
   arg_name 'package_name'
   command :github_release do |c|
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
@@ -147,11 +151,13 @@ class App # rubocop:disable Metrics/ClassLength
                       default_value: "'<owner>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
     c.flag %i[repo], desc: 'Repository name',
                      default_value: "'<repo>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
+    c.flag %i[token], desc: 'Token', default_value: defaults[:token]
     c.action do |global_options, options, args|
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo,
+                        :token, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -160,7 +166,7 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
-  desc 'Get package versions from GitHub tags. Set environment variable $GITHUB_TOKEN to avoid GitHub API limit.'
+  desc 'Get package versions from GitHub tags'
   arg_name 'package_name'
   command :github_tag do |c|
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
@@ -174,11 +180,13 @@ class App # rubocop:disable Metrics/ClassLength
                       default_value: "'<owner>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
     c.flag %i[repo], desc: 'Repository name',
                      default_value: "'<repo>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
+    c.flag %i[token], desc: 'Token', default_value: defaults[:token]
     c.action do |global_options, options, args|
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :owner, :repo,
+                        :token, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -204,7 +212,7 @@ class App # rubocop:disable Metrics/ClassLength
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :url, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:link] == 'value' if options[:link_value]
       opts[:semantic_only] = !options[:invalid_versions]
@@ -228,7 +236,7 @@ class App # rubocop:disable Metrics/ClassLength
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
@@ -251,7 +259,7 @@ class App # rubocop:disable Metrics/ClassLength
       help_now! unless args.size == 1
 
       opts = global_options.merge(options)
-      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :proxy
       opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
       opts[:semantic_only] = !options[:invalid_versions]
       opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
