@@ -9,11 +9,11 @@ module Getv
       @name = name
       case name
       when /rubygem-.*/
-        opts = { 'type' => 'gem' }.merge(opts)
+        opts = { type: 'gem' }.merge(opts)
       when /nodejs-.*/
-        opts = { 'type' => 'npm' }.merge(opts)
+        opts = { type: 'npm' }.merge(opts)
       when /python.*-.*/
-        opts = { 'type' => 'pypi' }.merge(opts)
+        opts = { type: 'pypi' }.merge(opts)
       end
       if opts[:type] == 'github_commit'
         opts = {
@@ -49,7 +49,7 @@ module Getv
       when 'npm'
         opts = { npm: name[/nodejs-(.*)/, 1] || name }.merge(opts)
       when 'pypi'
-        opts = { npm: name[/python.*-(.*)/, 1] || name }.merge(opts)
+        opts = { pypi: name[/python.*-(.*)/, 1] || name }.merge(opts)
       end
       @opts = opts
     end
