@@ -69,13 +69,39 @@ RSpec.describe Getv::Package, :vcr do
       }
     end
 
-    context 'with a forward slash in name' do
+    context 'with a single forward slash in name' do
       let :package do
         described_class.new 'mynamespace/mypackage', type: 'docker'
       end
 
       it 'correctly sets owner and repo options' do
         expected_opts = default_opts.merge(default_docker_opts).merge({ owner: 'mynamespace', repo: 'mypackage' })
+        expect(package.opts).to eq expected_opts
+      end
+    end
+
+    context 'with two forward slashes in name' do
+      let :package do
+        described_class.new 'foobar.com/mynamespace/mypackage', type: 'docker'
+      end
+
+      it 'correctly sets owner, repo and url options' do
+        expected_opts = default_opts.merge(default_docker_opts).merge(
+          { owner: 'mynamespace', repo: 'mypackage', url: 'https://foobar.com' }
+        )
+        expect(package.opts).to eq expected_opts
+      end
+    end
+
+    context 'with three forward slashes in name' do
+      let :package do
+        described_class.new 'foobar.com/mynamespace/mypackage/mysubpackage', type: 'docker'
+      end
+
+      it 'correctly sets owner, repo and url options' do
+        expected_opts = default_opts.merge(default_docker_opts).merge(
+          { owner: 'mynamespace', repo: 'mypackage/mysubpackage', url: 'https://foobar.com' }
+        )
         expect(package.opts).to eq expected_opts
       end
     end

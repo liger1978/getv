@@ -38,7 +38,7 @@ class App # rubocop:disable Metrics/ClassLength
 
   desc 'Get package versions from a Docker or OCI container image registry'
   arg_name 'package_name'
-  command :docker do |c|
+  command :docker do |c| # rubocop:disable Metrics/BlockLength
     defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
     c.flag %i[select_search], desc: 'Regex version selection search', default_value: defaults[:select_search]
     c.flag %i[select_replace], desc: 'Regex version selection replace', default_value: defaults[:select_replace]
@@ -47,10 +47,11 @@ class App # rubocop:disable Metrics/ClassLength
     c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)',
                                 default_value: defaults[:semantic_select]
     c.flag %i[owner], desc: 'Repository owner',
-                      default_value: "'<owner>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
+                      default_value: "'<owner>' if package_name is in format '<registry>/<owner>/<repo>' or '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
     c.flag %i[repo], desc: 'Repository name',
-                     default_value: "'<repo>' if package_name is in format '<owner>/<repo>', otherwise just package_name" # rubocop:disable Layout/LineLength
-    c.flag %i[url], desc: 'URL', default_value: defaults[:url]
+                     default_value: "'<repo>' if package_name is in format '<registry>/<owner>/<repo>' or <owner>/<repo>, otherwise just package_name" # rubocop:disable Layout/LineLength
+    c.flag %i[url], desc: 'URL',
+                    default_value: "'https://<registry>' if package_name is in format '<registry>/<owner>/<repo>', otherwise #{defaults[:url]}" # rubocop:disable Layout/LineLength
     c.flag %i[user], desc: 'Username', default_value: defaults[:user]
     c.flag %i[password], desc: 'Password', default_value: defaults[:password]
     c.action do |global_options, options, args|

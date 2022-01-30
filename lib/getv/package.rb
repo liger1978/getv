@@ -33,17 +33,29 @@ module Getv
         versions: nil,
         latest_version: nil
       }.merge(opts)
-      if (opts[:type] == 'docker' || opts[:type] =~ /github.*/) && (name.count('/') == 1)
-        opts = { owner: name.split('/')[0], repo: name.split('/')[1] }.merge(opts)
-      end
       case opts[:type]
       when 'docker'
-        opts = { owner: 'library', repo: name, url: 'https://registry.hub.docker.com', user: nil,
-                 password: nil }.merge(opts)
+        opts = { user: nil, password: nil }.merge(opts)
+        opts = case name.count('/')
+               when 0
+                 { owner: 'library', repo: name, url: 'https://registry.hub.docker.com' }.merge(opts)
+               when 1
+                 { owner: name.split('/')[0], repo: name.split('/')[1],
+                   url: 'https://registry.hub.docker.com' }.merge(opts)
+               else
+                 { owner: name.split('/')[1], repo: name.split('/')[2..-1].join('/'),
+                   url: "https://#{name.split('/')[0]}" }.merge(opts)
+               end
       when 'gem'
         opts = { gem: name[/rubygem-(.*)/, 1] || name }.merge(opts)
       when /github.*/
-        opts = { owner: name, repo: name, token: nil }.merge(opts)
+        opts = { token: nil }.merge(opts)
+        opts = case name.count('/')
+               when 1
+                 { owner: name.split('/')[0], repo: name.split('/')[1] }.merge(opts)
+               else
+                 { owner: name, repo: name }.merge(opts)
+               end
       when 'index'
         opts = { link: 'content' }.merge(opts)
       when 'npm'
