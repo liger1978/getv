@@ -108,7 +108,7 @@ module Getv
       RestClient::Request.execute(method: :get, url: url, proxy: opts[:proxy]).body
     end
 
-    def versions_using_docker # rubocop:disable Metrics/AbcSize
+    def versions_using_docker # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       require 'docker_registry2'
       docker_opts = {}
       docker_opts[:http_options] = { proxy: opts[:proxy] } unless opts[:proxy].nil?
@@ -118,6 +118,8 @@ module Getv
       end
       docker = DockerRegistry2.connect(opts[:url], docker_opts)
       docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags']
+    rescue DockerRegistry2::NotFound
+      []
     end
 
     def versions_using_gem
