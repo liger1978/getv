@@ -43,6 +43,12 @@ RSpec.describe 'Getv:Cli' do # rubocop:disable RSpec/DescribeClass
       .to_stdout_from_any_process
   end
 
+  specify 'getv help helm' do
+    expect { system %(./exe/getv help helm) }
+      .to output(a_string_including('Get package versions from a Helm chart repository'))
+      .to_stdout_from_any_process
+  end
+
   specify 'getv help index' do
     expect { system %(./exe/getv help index) }
       .to output(a_string_including('Get package versions from web page of links'))

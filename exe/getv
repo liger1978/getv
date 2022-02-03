@@ -196,6 +196,34 @@ class App # rubocop:disable Metrics/ClassLength
     end
   end
 
+  desc 'Get package versions from a Helm chart repository'
+  arg_name 'package_name'
+  command :helm do |c|
+    defaults = (Getv::Package.new 'name', type: c.name.to_s).opts
+    c.flag %i[select_search], desc: 'Regex version selection search', default_value: defaults[:select_search]
+    c.flag %i[select_replace], desc: 'Regex version selection replace', default_value: defaults[:select_replace]
+    c.flag %i[reject], desc: 'Regex version rejection', default_value: defaults[:reject]
+    c.switch %i[invalid_versions], desc: 'Include invalid semantic versions', negatable: false, default_value: false
+    c.flag %i[semantic_select], desc: 'Semantic version selection (comma delimited)',
+                                default_value: defaults[:semantic_select]
+    c.flag %i[chart], desc: 'Chart name', default_value: 'package_name'
+    c.flag %i[url], desc: 'URL', default_value: defaults[:url]
+    c.flag %i[user], desc: 'Username', default_value: defaults[:user]
+    c.flag %i[password], desc: 'Password', default_value: defaults[:password]
+    c.action do |global_options, options, args|
+      help_now! unless args.size == 1
+
+      opts = global_options.merge(options)
+      opts = opts.slice :select_search, :select_replace, :reject, :semantic_only, :semantic_select, :chart, :url,
+                        :user, :password, :proxy
+      opts = opts.delete_if { |k, v| v.nil? || v == c.flags[k].default_value }
+      opts[:semantic_only] = !options[:invalid_versions]
+      opts[:semantic_select] = opts[:semantic_select].split(',') unless opts.fetch(:semantic_select, nil).nil?
+      package = Getv::Package.new args[0], { type: c.name.to_s }.merge(opts)
+      Getv::Cli.output(package, latest: global_options[:latest], json: global_options[:json])
+    end
+  end
+
   desc 'Get package versions from web page of links'
   arg_name 'package_name'
   command :index do |c|
