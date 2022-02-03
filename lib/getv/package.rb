@@ -56,6 +56,8 @@ module Getv
                else
                  { owner: name, repo: name }.merge(opts)
                end
+      when 'helm'
+        opts = { chart: name, url: nil, user: nil, password: nil }.merge(opts)
       when 'index'
         opts = { link: 'content' }.merge(opts)
       when 'npm'
@@ -103,9 +105,14 @@ module Getv
 
     private
 
-    def get(url)
+    def get(url) # rubocop:disable Metrics/AbcSize
       require 'rest-client'
-      RestClient::Request.execute(method: :get, url: url, proxy: opts[:proxy]).body
+      if opts[:user] && opts[:password]
+        RestClient::Request.execute(method: :get, url: url, proxy: opts[:proxy], user: opts[:user],
+                                    password: opts[:password]).body
+      else
+        RestClient::Request.execute(method: :get, url: url, proxy: opts[:proxy]).body
+      end
     end
 
     def versions_using_docker # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -158,6 +165,11 @@ module Getv
       else
         github.tags("#{opts[:owner]}/#{opts[:repo]}").map { |t| t[:name] }
       end
+    end
+
+    def versions_using_helm
+      require 'yaml'
+      YAML.safe_load(get("#{opts[:url]}/index.yaml")).fetch('entries', {}).fetch(name, []).map { |e| e['version'] }
     end
 
     def versions_using_index

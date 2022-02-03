@@ -39,15 +39,16 @@ SYNOPSIS
 
 
 VERSION
-    1.5.0
+    1.7.0
 
 
 
 GLOBAL OPTIONS
-    --help       - Show this message
-    -j, --json   - Output in json
-    -l, --latest - Latest version
-    --version    - Display the program version
+    --help          - Show this message
+    -j, --json      - Output in json
+    -l, --latest    - Latest version
+    -p, --proxy=arg - Web proxy (default: none)
+    --version       - Display the program version
 
 
 
@@ -58,6 +59,7 @@ COMMANDS
     github_commit  - Get package versions from GitHub commits
     github_release - Get package versions from GitHub releases
     github_tag     - Get package versions from GitHub tags
+    helm           - Get package versions from a Helm chart repository
     help           - Shows a list of commands or help for one command
     index          - Get package versions from web page of links
     npm            - Get package versions from npm at registry.npmjs.org
@@ -70,7 +72,7 @@ Show the latest available version of the `getv` gem:
 
 ```console
 $ getv --latest gem getv
-1.5.0
+1.7.0
 ```
 
 Show all `dep` GitHub release versions in JSON:
