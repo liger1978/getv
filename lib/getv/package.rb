@@ -169,7 +169,9 @@ module Getv
 
     def versions_using_helm
       require 'yaml'
-      YAML.safe_load(get("#{opts[:url]}/index.yaml")).fetch('entries', {}).fetch(opts[:chart], []).map { |e| e['version'] }
+      YAML.safe_load(get("#{opts[:url]}/index.yaml")).fetch('entries', {}).fetch(opts[:chart], []).map do |e|
+        e['version']
+      end
     end
 
     def versions_using_index
