@@ -39,7 +39,7 @@ SYNOPSIS
 
 
 VERSION
-    1.7.0
+    2.0.0
 
 
 
@@ -55,15 +55,15 @@ GLOBAL OPTIONS
 COMMANDS
     docker         - Get package versions from a Docker or OCI container image registry
     gem            - Get package versions from RubyGems.org
-    get            - Get package versions from text file URL
     github_commit  - Get package versions from GitHub commits
     github_release - Get package versions from GitHub releases
     github_tag     - Get package versions from GitHub tags
     helm           - Get package versions from a Helm chart repository
     help           - Shows a list of commands or help for one command
-    index          - Get package versions from web page of links
     npm            - Get package versions from npm at registry.npmjs.org
     pypi           - Get package versions from the Python Package Index at pypi.org
+    text           - Get package versions from text file URL
+    xml            - Get package versions from XML file URL
 ```
 
 ### CLI examples
@@ -72,7 +72,7 @@ Show the latest available version of the `getv` gem:
 
 ```console
 $ getv --latest gem getv
-1.7.0
+2.0.0
 ```
 
 Show all `dep` GitHub release versions in JSON:
@@ -108,10 +108,10 @@ $ getv --json docker --reject '-' --semantic_select '~>1.3.0,!=1.3.1' apache/sup
 {"name":"apache/superset","versions":["1.3.0","1.3.2"]}
 ```
 
-Show all versions of `libnetfilter_acct` using selected link values on an indexed web page:
+Show all versions of `libnetfilter_acct` using selected link values (`<a>` HTML elements) on an indexed web page:
 
 ```console
-$ getv --select_search='^.*libnetfilter_acct-([\d\.]*)\.tar\.bz2$' index --url=https://netfilter.org/projects/libnetfilter_acct/files --link_value libnetfilter_acct
+$ getv xml --url=https://netfilter.org/projects/libnetfilter_acct/files --xpath '//a' --select_search='^.*libnetfilter_acct-([\d\.]*)\.tar\.bz2$' libnetfilter_acct
 1.0.0
 1.0.1
 1.0.2
@@ -133,7 +133,7 @@ Example:
 ```ruby
 require 'getv'
 
-superset = Getv::Package.new 'superset', type: 'docker', owner: 'apache', reject: '-'
+superset = Getv::Package::Docker.new 'apache/superset', reject: '-'
 puts superset.versions
 puts superset.latest_version
 ```

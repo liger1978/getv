@@ -19,8 +19,8 @@ RSpec.describe 'Getv:Cli' do # rubocop:disable RSpec/DescribeClass
       .to_stdout_from_any_process
   end
 
-  specify 'getv help get' do
-    expect { system %(./exe/getv help get) }
+  specify 'getv help text' do
+    expect { system %(./exe/getv help text) }
       .to output(a_string_including('Get package versions from text file URL'))
       .to_stdout_from_any_process
   end
@@ -49,9 +49,9 @@ RSpec.describe 'Getv:Cli' do # rubocop:disable RSpec/DescribeClass
       .to_stdout_from_any_process
   end
 
-  specify 'getv help index' do
-    expect { system %(./exe/getv help index) }
-      .to output(a_string_including('Get package versions from web page of links'))
+  specify 'getv help xml' do
+    expect { system %(./exe/getv help xml) }
+      .to output(a_string_including('Get package versions from XML file URL'))
       .to_stdout_from_any_process
   end
 
