@@ -39,7 +39,7 @@ SYNOPSIS
 
 
 VERSION
-    2.0.0
+    2.1.0
 
 
 
@@ -72,7 +72,7 @@ Show the latest available version of the `getv` gem:
 
 ```console
 $ getv --latest gem getv
-2.0.0
+2.1.0
 ```
 
 Show all `dep` GitHub release versions in JSON:
