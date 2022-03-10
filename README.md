@@ -97,7 +97,7 @@ $ getv github_release --invalid_versions wez/atomicparsley
 Show the latest stable version of Kubernetes using the release text file URL:
 
 ```console
-$ getv -l get --url=https://storage.googleapis.com/kubernetes-release/release/stable.txt kubernetes
+$ getv -l text --url=https://storage.googleapis.com/kubernetes-release/release/stable.txt kubernetes
 1.23.2
 ```
 
