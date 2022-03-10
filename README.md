@@ -136,6 +136,13 @@ require 'getv'
 superset = Getv::Package::Docker.new 'apache/superset', reject: '-'
 puts superset.versions
 puts superset.latest_version
+
+# You can also use the flexible "create" factory method
+Getv::Package.create 'apache/superset', type: 'docker', reject: '-'
+Getv::Package.create 'golang/dep', type: 'github release'
+Getv::Package.create 'golang/dep', type: 'github_release'
+Getv::Package.create 'golang/dep', type: 'GitHub::Release'
+Getv::Package.create 'rubygem-getv'
 ```
 
 ## Development

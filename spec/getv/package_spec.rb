@@ -56,5 +56,45 @@ RSpec.describe Getv::Package, :vcr do
         expect(package.opts[:npm]).to eq 'mypackage'
       end
     end
+
+    context 'when type is set to github_release' do
+      let :package do
+        described_class.create 'getv', type: 'github_release'
+      end
+
+      it 'sets package class to Getv::GitHub::Release' do
+        expect(package.class).to eq Getv::Package::GitHub::Release
+      end
+    end
+
+    context 'when type is set to Github Release' do
+      let :package do
+        described_class.create 'getv', type: 'Github Release'
+      end
+
+      it 'sets package class to Getv::GitHub::Release' do
+        expect(package.class).to eq Getv::Package::GitHub::Release
+      end
+    end
+
+    context 'when type is set to GitHub::Release' do
+      let :package do
+        described_class.create 'getv', type: 'GitHub::Release'
+      end
+
+      it 'sets package class to Getv::GitHub::Release' do
+        expect(package.class).to eq Getv::Package::GitHub::Release
+      end
+    end
+
+    context 'when type is set to pypi' do
+      let :package do
+        described_class.create 'mypackage', type: 'pypi'
+      end
+
+      it 'sets package class to Getv::Pypi' do
+        expect(package.class).to eq Getv::Package::Pypi
+      end
+    end
   end
 end

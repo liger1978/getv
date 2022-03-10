@@ -6,6 +6,17 @@ module Getv
     attr_accessor :name, :opts
 
     def self.create(name, opts = {})
+      if opts.fetch(:type, nil).nil?
+        opts.delete(:type)
+        create_using_name(name, opts)
+      else
+        type = opts[:type]
+        opts.delete(:type)
+        type_to_class(type).new name, opts
+      end
+    end
+
+    private_class_method def self.create_using_name(name, opts)
       case name
       when /ruby(gem)?-.*/
         Getv::Package::Gem.new name, opts
@@ -16,6 +27,14 @@ module Getv
       else
         Getv::Package::GitHub::Release.new name, opts
       end
+    end
+
+    private_class_method def self.type_to_class(type)
+      sections = type.split(/_|::| |-|:/)
+      sections.each(&:capitalize!)
+      sections.each { |section| section.sub! 'Github', 'GitHub' }
+      type = sections.join '::'
+      Object.const_get("Getv::Package::#{type}")
     end
 
     def initialize(name, opts = {})
