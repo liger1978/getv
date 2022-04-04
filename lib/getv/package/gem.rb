@@ -14,9 +14,12 @@ module Getv
 
       def retrieve_versions
         require 'json'
+        retries ||= 0
         JSON.parse(get("https://rubygems.org/api/v1/versions/#{opts[:gem]}.json")).map do |v|
           v['number']
         end
+      rescue StandardError
+        retry if (retries += 1) < 4
       end
     end
   end

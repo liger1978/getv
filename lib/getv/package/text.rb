@@ -13,7 +13,10 @@ module Getv
       private
 
       def retrieve_versions
+        retries ||= 0
         get(opts[:url]).split("\n")
+      rescue StandardError
+        retry if (retries += 1) < 4
       end
     end
   end

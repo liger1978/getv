@@ -18,10 +18,13 @@ module Getv
 
         private
 
-        def retrieve_versions
+        def retrieve_versions # rubocop:disable Metrics/AbcSize
+          retries ||= 0
           github.commits("#{opts[:owner]}/#{opts[:repo]}", opts[:branch]).map do |c|
             "#{DateTime.parse(c[:commit][:author][:date].to_s).strftime('%Y%m%d%H%M%S')},#{c[:sha]}"
           end
+        rescue StandardError
+          retry if (retries += 1) < 4
         end
       end
     end

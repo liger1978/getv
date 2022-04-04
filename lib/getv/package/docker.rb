@@ -38,10 +38,13 @@ module Getv
 
       def retrieve_versions
         require 'docker_registry2'
+        retries ||= 0
         docker = DockerRegistry2.connect(opts[:url], docker_opts)
         docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags'] || []
       rescue DockerRegistry2::NotFound
         []
+      rescue StandardError
+        retry if (retries += 1) < 4
       end
     end
   end
