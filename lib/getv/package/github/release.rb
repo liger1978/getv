@@ -14,7 +14,10 @@ module Getv
         private
 
         def retrieve_versions
+          retries ||= 0
           github.releases("#{opts[:owner]}/#{opts[:repo]}").map(&:tag_name)
+        rescue StandardError
+          retry if (retries += 1) < 4
         end
       end
     end

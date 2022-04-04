@@ -13,8 +13,11 @@ module Getv
       private
 
       def retrieve_versions
+        retries ||= 0
         require 'nokogiri'
         Nokogiri::XML(get(opts[:url])).xpath(opts[:xpath]).map(&:text)
+      rescue StandardError
+        retry if (retries += 1) < 4
       end
     end
   end

@@ -14,7 +14,10 @@ module Getv
 
       def retrieve_versions
         require 'json'
+        retries ||= 0
         JSON.parse(get("https://pypi.org/pypi/#{opts[:pypi]}/json"))['releases'].keys
+      rescue StandardError
+        retry if (retries += 1) < 4
       end
     end
   end
