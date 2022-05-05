@@ -36,15 +36,20 @@ module Getv
         d_opts
       end
 
-      def retrieve_versions
+      def retrieve_versions # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
         require 'docker_registry2'
         retries ||= 0
         docker = DockerRegistry2.connect(opts[:url], docker_opts)
         docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags'] || []
       rescue DockerRegistry2::NotFound
         []
-      rescue StandardError
-        retry if (retries += 1) < 4
+      rescue StandardError => e
+        if (retries += 1) < 4
+          retry
+        else
+          puts "Error fetching tags for docker image #{opts[:url]}/#{opts[:owner]}/#{opts[:repo]}:"
+          puts e.message
+        end
       end
     end
   end

@@ -66,7 +66,7 @@ module Getv
     end
 
     def update_versions # rubocop:disable Metrics/PerceivedComplexity,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/AbcSize
-      versions = retrieve_versions
+      versions = retrieve_versions || []
       versions.sort! if instance_of?(Getv::Package::GitHub::Commit)
       select_pattern = Regexp.new(opts[:select_search])
       versions.select! { |v| v =~ select_pattern }
