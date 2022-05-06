@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency('gli', '>= 2.20.1', '< 3.0.0')
-  spec.add_dependency('docker_registry2', '>= 1.0.0', '< 2.0.0')
+  spec.add_dependency('docker_registry2', '>= 1.10.1', '< 2.0.0')
   spec.add_dependency('nokogiri', '>= 1.0.0', '< 2.0.0')
   spec.add_dependency('octokit', '>= 3.0.0', '< 5.0.0')
   spec.add_dependency('rest-client', '>= 2.1.0', '< 3.0.0')
