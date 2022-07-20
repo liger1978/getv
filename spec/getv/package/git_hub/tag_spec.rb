@@ -33,7 +33,7 @@ RSpec.describe Getv::Package::GitHub::Tag, :vcr do
     end
 
     it 'returns correct versions' do
-      expect(package.opts[:versions][-10..-1]).to eq expected_versions
+      expect(package.opts[:versions][-10..]).to eq expected_versions
     end
 
     it 'returns latest version' do

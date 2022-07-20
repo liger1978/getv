@@ -10,6 +10,7 @@ RSpec.describe Getv::Package::Docker, :vcr do
       select_replace: '\\1',
       select_search: '^\\s*v?(.*)\\s*$',
       semantic_only: true,
+      semantic_prefix: nil,
       semantic_select: ['*'],
       url: 'https://registry.hub.docker.com',
       user: nil,
@@ -78,8 +79,33 @@ RSpec.describe Getv::Package::Docker, :vcr do
     it 'returns latest version' do
       expect(package.opts[:latest_version]).to eq expected_versions.last
     end
-    ##      it 'has the right options' do
-    ##        expect(package.opts.reject! { |k, _v| %i[latest_version versions].include?(k) }).to eq(default_opts)
-    ##      end
+  end
+
+  context 'when versions method with prefix and minimum version is called' do
+    let :package do
+      described_class.new 'ceph', owner: 'rook', reject: '-', select_search: '^(v[\\d\\.]*)$', semantic_prefix: 'v',
+                                  semantic_select: ['>= 1.9.0']
+    end
+
+    let :expected_versions do
+      ['v1.9.0', 'v1.9.1', 'v1.9.2', 'v1.9.3', 'v1.9.4', 'v1.9.5', 'v1.9.6', 'v1.9.7']
+    end
+
+    after do
+      package.opts.delete :versions
+      package.opts.delete :latest_version
+    end
+
+    before do
+      package.versions
+    end
+
+    it 'returns correct versions' do
+      expect(package.opts[:versions]).to eq expected_versions
+    end
+
+    it 'returns latest version' do
+      expect(package.opts[:latest_version]).to eq expected_versions.last
+    end
   end
 end

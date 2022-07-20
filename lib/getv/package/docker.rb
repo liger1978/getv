@@ -21,7 +21,7 @@ module Getv
           { owner: name.split('/')[0], repo: name.split('/')[1],
             url: 'https://registry.hub.docker.com' }
         else
-          { owner: name.split('/')[1], repo: name.split('/')[2..-1].join('/'),
+          { owner: name.split('/')[1], repo: name.split('/')[2..].join('/'),
             url: "https://#{name.split('/')[0]}" }
         end
       end

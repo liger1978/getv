@@ -42,12 +42,13 @@ module Getv
       @opts = opts
     end
 
-    def defaults
+    def defaults # rubocop:disable Metrics/MethodLength
       {
         select_search: '^\s*v?(.*)\s*$',
         select_replace: '\1',
         reject: nil,
         semantic_only: true,
+        semantic_prefix: nil,
         semantic_select: ['*'],
         proxy: nil,
         versions: nil,
@@ -72,14 +73,22 @@ module Getv
       versions.select! { |v| v =~ select_pattern }
       versions.map! { |v| v.sub(select_pattern, opts[:select_replace]) }
       versions.reject! { |v| v =~ Regexp.new(opts[:reject]) } unless opts[:reject].nil?
+
       if opts[:semantic_only]
         require 'semantic'
         require 'semantic/core_ext'
-        versions.select!(&:is_version?)
-        opts[:semantic_select].each do |comparator|
-          versions.select! { |v| Semantic::Version.new(v).satisfies?(comparator) }
+
+        # remove non semantic version tags
+        versions.select! do |v|
+          v.sub(/^#{opts[:semantic_prefix]}/, '').is_version? && v.start_with?(opts[:semantic_prefix].to_s)
         end
-        versions.sort_by! { |v| Semantic::Version.new(v) }
+
+        opts[:semantic_select].each do |comparator|
+          versions.select! do |v|
+            Semantic::Version.new(v.sub(/^#{opts[:semantic_prefix]}/, '')).satisfies?(comparator)
+          end
+        end
+        versions.sort_by! { |v| Semantic::Version.new(v.sub(/^#{opts[:semantic_prefix]}/, '')) }
       else
         versions.sort! unless instance_of?(Getv::Package::GitHub::Commit)
       end
