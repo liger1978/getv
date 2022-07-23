@@ -3,6 +3,7 @@
 RSpec.describe Getv::Package::Docker, :vcr do
   let :default_opts do
     {
+      auto_paginate: true,
       latest_version: nil,
       password: nil,
       proxy: nil,
