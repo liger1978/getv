@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in getv.gemspec
 gemspec
 
-gem 'docker_registry2', ['>= 1.10.1', '< 2.0.0']
+gem 'docker_registry2', ['>= 1.11.0', '< 2.0.0']
 gem 'gli', '~> 2.20'
 gem 'irb', '~> 1.4'
 gem 'nokogiri', '~> 1.13'
