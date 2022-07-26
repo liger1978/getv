@@ -6,7 +6,7 @@ module Getv
     class Docker < Package
       def initialize(name, opts = {})
         opts = defaults.merge(opts)
-        opts = { user: nil, password: nil }.merge(opts)
+        opts = { user: nil, password: nil, auto_paginate: true }.merge(opts)
         opts = docker_defaults(name).merge(opts)
         super name, opts
       end
@@ -40,7 +40,7 @@ module Getv
         require 'docker_registry2'
         retries ||= 0
         docker = DockerRegistry2.connect(opts[:url], docker_opts)
-        docker.tags("#{opts[:owner]}/#{opts[:repo]}")['tags'] || []
+        docker.tags("#{opts[:owner]}/#{opts[:repo]}", auto_paginate: opts[:auto_paginate])['tags'] || []
       rescue DockerRegistry2::NotFound
         []
       rescue StandardError => e
